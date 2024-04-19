@@ -101,8 +101,7 @@
 
 <li><strong>GitHub PowerShell Script</strong>
   <ul>
-    <li>From within the VM or local host, open a web browser (e.g., Edge).</li>
-    <li>Visit the provided GitHub link and copy the PowerShell Script.</li>
+    <li>Visit the provided <a href="https://github.com/Fabiany-cs/Azure-VM-Honeypot-Integrated-with-Azure-Sentinel-SIEM-/blob/main/PowerShell%20Log%20Exporter%20(GEO%20IP)" target="_blank">GitHub link</a> and copy the PowerShell Script.</li>
     <li>Open PowerShell ISE, create a new document, and paste the script.</li>
     <li>Save the document on the Desktop with a descriptive name (e.g., Log_Exporter).</li>
   </ul>
