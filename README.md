@@ -151,7 +151,7 @@
   <ul>
     <li>After logs generate, examine the RawData field in the logs.</li>
     <li>Create custom fields to filter the raw data for analysis.</li>
-    <li>Copy and paste the query to extract custom fields such as username, timestamp, latitude, longitude, and more.</li>
+    <li>Copy and paste the <a href="https://github.com/Fabiany-cs/Azure-VM-Honeypot-Integrated-with-Azure-Sentinel-SIEM-/blob/main/Extract%20Log%20Query" target="_blank">query</a> to extract custom fields such as username, timestamp, latitude, longitude, and more.</li>
   </ul>
 </li>
 
