@@ -116,7 +116,6 @@
 </li>
 <img width="1437" alt="Screenshot 2024-04-18 at 10 00 42 PM" src="https://github.com/Fabiany-cs/Azure-VM-Honeypot-Integrated-with-Azure-Sentinel-SIEM-/assets/107880960/3255bc47-f16d-46d0-8aab-98adf807fcf1">
 
-
 <hr>
 
   <li><strong>Logging into the VM via RDP</strong>
@@ -127,6 +126,8 @@
     <li>Adjust privacy settings and accept network discoverability prompts.</li>
   </ul>
 </li>
+<img width="143" alt="Screenshot 2024-04-18 at 10 01 05 PM" src="https://github.com/Fabiany-cs/Azure-VM-Honeypot-Integrated-with-Azure-Sentinel-SIEM-/assets/107880960/248c48a4-f23d-4523-894c-899f7ef1c99a">
+<img width="763" alt="Screenshot 2024-04-18 at 10 16 44 PM" src="https://github.com/Fabiany-cs/Azure-VM-Honeypot-Integrated-with-Azure-Sentinel-SIEM-/assets/107880960/3e868892-14fe-4eae-bac5-7cfb50e31284"
 
 <hr>
 
@@ -137,6 +138,7 @@
     <li>Save the document on the Desktop with a descriptive name (e.g., Log_Exporter).</li>
   </ul>
 </li>
+<img width="1437" alt="Screenshot 2024-04-18 at 10 02 07 PM" src="https://github.com/Fabiany-cs/Azure-VM-Honeypot-Integrated-with-Azure-Sentinel-SIEM-/assets/107880960/a4340d57-069d-41d2-8283-71613dd4b7b1">
 
 <hr>
   
@@ -148,6 +150,7 @@
     <li>Save the script and run it to start logging.</li>
   </ul>
 </li>
+<img width="1437" alt="Screenshot 2024-04-18 at 10 02 43 PM" src="https://github.com/Fabiany-cs/Azure-VM-Honeypot-Integrated-with-Azure-Sentinel-SIEM-/assets/107880960/a05314df-66ea-4940-acae-da0115a6d538">
 
 <hr>
 
@@ -157,6 +160,7 @@
     <li>If the script is working, a purple line will appear in the PowerShell script with the latitude and longitude of the attempted IP address.</li>
   </ul>
 </li>
+<img width="1437" alt="Screenshot 2024-04-18 at 10 03 11 PM" src="https://github.com/Fabiany-cs/Azure-VM-Honeypot-Integrated-with-Azure-Sentinel-SIEM-/assets/107880960/eeb3824f-bc74-4369-b7a2-167424eb8bf8">
 
 <hr>
 
@@ -166,6 +170,9 @@
     <li>Analyze the log file to observe attempted login events.</li>
   </ul>
 </li>
+<img width="1437" alt="Screenshot 2024-04-18 at 10 03 44 PM" src="https://github.com/Fabiany-cs/Azure-VM-Honeypot-Integrated-with-Azure-Sentinel-SIEM-/assets/107880960/4a1e4f20-481e-423c-99d5-ed144b683847">
+<img width="1437" alt="Screenshot 2024-04-18 at 10 03 52 PM" src="https://github.com/Fabiany-cs/Azure-VM-Honeypot-Integrated-with-Azure-Sentinel-SIEM-/assets/107880960/8554d61b-4a3b-4afa-a67c-748fe1f79c0f">
+<img width="1437" alt="Screenshot 2024-04-18 at 10 04 09 PM" src="https://github.com/Fabiany-cs/Azure-VM-Honeypot-Integrated-with-Azure-Sentinel-SIEM-/assets/107880960/13bcb5ba-a02a-4a24-ab89-546a3a1f9c35">
 
 <hr>
 
@@ -177,6 +184,8 @@
     <li>Specify the collection path (e.g., C:\ProgramData\failed_rdp.log) and create the custom log.</li>
   </ul>
 </li>
+<img width="1437" alt="Screenshot 2024-04-18 at 10 04 47 PM" src="https://github.com/Fabiany-cs/Azure-VM-Honeypot-Integrated-with-Azure-Sentinel-SIEM-/assets/107880960/d0dd417c-247e-417c-af77-bab337b51687">
+<img width="1322" alt="Screenshot 2024-04-18 at 10 07 06 PM" src="https://github.com/Fabiany-cs/Azure-VM-Honeypot-Integrated-with-Azure-Sentinel-SIEM-/assets/107880960/4df7d596-a5c9-4641-ba6d-9e46a2d9eabf">
 
 <hr>
 
@@ -187,6 +196,12 @@
     <li>Wait for logs to generate (may take 20-40 minutes) and run the query again if needed.</li>
   </ul>
 </li>
+<img width="1437" alt="Screenshot 2024-04-18 at 10 07 42 PM" src="https://github.com/Fabiany-cs/Azure-VM-Honeypot-Integrated-with-Azure-Sentinel-SIEM-/assets/107880960/1591e3a1-9a8a-4c94-8b9e-795576a793b4">
+<img width="1437" alt="Screenshot 2024-04-18 at 10 07 48 PM" src="https://github.com/Fabiany-cs/Azure-VM-Honeypot-Integrated-with-Azure-Sentinel-SIEM-/assets/107880960/3dd3d5b9-3846-45fc-876c-7437bf920906">
+<img width="1437" alt="Screenshot 2024-04-18 at 10 08 12 PM" src="https://github.com/Fabiany-cs/Azure-VM-Honeypot-Integrated-with-Azure-Sentinel-SIEM-/assets/107880960/1865217d-44c9-401f-98e4-5ef0b32d338f">
+<img width="1437" alt="Screenshot 2024-04-18 at 10 08 27 PM" src="https://github.com/Fabiany-cs/Azure-VM-Honeypot-Integrated-with-Azure-Sentinel-SIEM-/assets/107880960/3d078039-2cca-432a-baa3-cf05e7981ac9">
+<img width="1437" alt="Screenshot 2024-04-18 at 10 08 34 PM" src="https://github.com/Fabiany-cs/Azure-VM-Honeypot-Integrated-with-Azure-Sentinel-SIEM-/assets/107880960/fdac3c75-bcbe-42f1-bf5a-a3ac4e01b5a6">
+<img width="1437" alt="Screenshot 2024-04-18 at 10 09 58 PM" src="https://github.com/Fabiany-cs/Azure-VM-Honeypot-Integrated-with-Azure-Sentinel-SIEM-/assets/107880960/12480f64-8ed8-453e-950e-4f28cd54ef0a">
 
 <hr>
 
@@ -197,6 +212,7 @@
     <li>Copy and paste the <a href="https://github.com/Fabiany-cs/Azure-VM-Honeypot-Integrated-with-Azure-Sentinel-SIEM-/blob/main/Extract%20Log%20Query" target="_blank">query</a> to extract custom fields such as username, timestamp, latitude, longitude, and more.</li>
   </ul>
 </li>
+<img width="1437" alt="Screenshot 2024-04-18 at 10 11 13 PM" src="https://github.com/Fabiany-cs/Azure-VM-Honeypot-Integrated-with-Azure-Sentinel-SIEM-/assets/107880960/97d13a7b-315d-4823-929f-d0d23e472ef7">
 
 <hr>
 
@@ -209,6 +225,12 @@
     <li>Visualize the data on a map for geographic analysis.</li>
   </ul>
 </li>
+<img width="1437" alt="Screenshot 2024-04-18 at 10 12 00 PM" src="https://github.com/Fabiany-cs/Azure-VM-Honeypot-Integrated-with-Azure-Sentinel-SIEM-/assets/107880960/3c14994c-0bed-4297-a388-9582c6e7082d">
+<img width="1437" alt="Screenshot 2024-04-18 at 10 12 29 PM" src="https://github.com/Fabiany-cs/Azure-VM-Honeypot-Integrated-with-Azure-Sentinel-SIEM-/assets/107880960/cccad58c-7ad0-436f-a37e-82a2baa3d15e">
+<img width="1437" alt="Screenshot 2024-04-18 at 10 12 40 PM" src="https://github.com/Fabiany-cs/Azure-VM-Honeypot-Integrated-with-Azure-Sentinel-SIEM-/assets/107880960/b6e3a5e3-74e6-4de5-b07c-db0e368a6480">
+<img width="1437" alt="Screenshot 2024-04-18 at 10 12 58 PM" src="https://github.com/Fabiany-cs/Azure-VM-Honeypot-Integrated-with-Azure-Sentinel-SIEM-/assets/107880960/ce6b2784-3ca8-40fd-bd92-397ba86fc17f">
+<img width="1437" alt="Screenshot 2024-04-18 at 10 13 22 PM" src="https://github.com/Fabiany-cs/Azure-VM-Honeypot-Integrated-with-Azure-Sentinel-SIEM-/assets/107880960/65d36da4-b092-4550-b92c-5f9ffa4a9a58">
+<img width="1437" alt="Screenshot 2024-04-18 at 10 13 54 PM" src="https://github.com/Fabiany-cs/Azure-VM-Honeypot-Integrated-with-Azure-Sentinel-SIEM-/assets/107880960/cb265d24-a6f8-4390-9705-1f6f9b79f3c8">
 
 <hr>
 
