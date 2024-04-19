@@ -69,7 +69,6 @@
   </li>
 <img width="1437" alt="Screenshot 2024-04-18 at 9 58 53 PM" src="https://github.com/Fabiany-cs/Azure-VM-Honeypot-Integrated-with-Azure-Sentinel-SIEM-/assets/107880960/2b776984-abec-4ad1-bd63-1d03bbe1a7ff">
 
-
 <hr>
   
   <li><strong>Microsoft Defender for Cloud</strong>
@@ -89,6 +88,10 @@
     <li>Save the settings.</li>
   </ul>
 </li>
+<img width="1437" alt="Screenshot 2024-04-18 at 9 59 27 PM" src="https://github.com/Fabiany-cs/Azure-VM-Honeypot-Integrated-with-Azure-Sentinel-SIEM-/assets/107880960/f40deb84-f4b1-486c-8952-ed3bad1a79f7">
+<img width="1437" alt="Screenshot 2024-04-18 at 9 59 33 PM" src="https://github.com/Fabiany-cs/Azure-VM-Honeypot-Integrated-with-Azure-Sentinel-SIEM-/assets/107880960/b4dd4b42-8f2b-489c-a822-35d40a588313">
+<img width="1437" alt="Screenshot 2024-04-18 at 9 59 33 PM" src="https://github.com/Fabiany-cs/Azure-VM-Honeypot-Integrated-with-Azure-Sentinel-SIEM-/assets/107880960/432497a0-a729-4848-a30d-8b0e58c3f18e">
+<img width="1437" alt="Screenshot 2024-04-18 at 9 59 53 PM" src="https://github.com/Fabiany-cs/Azure-VM-Honeypot-Integrated-with-Azure-Sentinel-SIEM-/assets/107880960/75af6e79-ffce-42c3-bf2f-12731e646c11">
 
 <hr>
 
@@ -99,6 +102,8 @@
     <li>This enables data collection from the VM for monitoring and analysis.</li>
   </ul>
 </li>
+<img width="1437" alt="Screenshot 2024-04-18 at 10 00 11 PM" src="https://github.com/Fabiany-cs/Azure-VM-Honeypot-Integrated-with-Azure-Sentinel-SIEM-/assets/107880960/128295f4-0394-47f3-9040-9caf14510aab">
+<img width="1437" alt="Screenshot 2024-04-18 at 10 00 18 PM" src="https://github.com/Fabiany-cs/Azure-VM-Honeypot-Integrated-with-Azure-Sentinel-SIEM-/assets/107880960/dc2c8e04-96bb-4d6c-8a7b-76e0d2220b8a">
 
 <hr>
 
@@ -109,6 +114,8 @@
     <li>Follow the prompts to create Microsoft Sentinel.</li>
   </ul>
 </li>
+<img width="1437" alt="Screenshot 2024-04-18 at 10 00 42 PM" src="https://github.com/Fabiany-cs/Azure-VM-Honeypot-Integrated-with-Azure-Sentinel-SIEM-/assets/107880960/3255bc47-f16d-46d0-8aab-98adf807fcf1">
+
 
 <hr>
 
