@@ -160,6 +160,9 @@
     <li>Specify the collection path (e.g., C:\ProgramData\failed_rdp.log) and create the custom log.</li>
   </ul>
 </li>
+
+<hr>
+
   <li><strong>View Logs</strong>
   <ul>
     <li>Navigate to Log Analytics Workspaces &gt; Select your workspace &gt; Logs.</li>
