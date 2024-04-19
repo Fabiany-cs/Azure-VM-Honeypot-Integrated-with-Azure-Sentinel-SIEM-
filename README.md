@@ -254,10 +254,11 @@
 
 <li><strong>Monitor Attacks</strong>
   <ul>
-    <li>Leave the VM running to monitor and analyze brute force login attempts. The longer the better.</li>
+    <li>Leave the VM running to monitor and analyze brute force login attempts. The longer the better. Below is a screenshot from Josh Madakors and as you can see the longer you leave the honeypot the more attempts will be made from around the world.</li>
     <li>Observe Azure Sentinel for alerts and visualizations of attempted logins on the map.</li>
   </ul>
 </li>
+<img width="1437" alt="Screenshot 2024-04-18 at 11 15 45 PM" src="https://github.com/Fabiany-cs/Azure-VM-Honeypot-Integrated-with-Azure-Sentinel-SIEM-/assets/107880960/a1cf81a2-08cc-49fb-a252-5061eec2b36f">
 
 <hr>
 
