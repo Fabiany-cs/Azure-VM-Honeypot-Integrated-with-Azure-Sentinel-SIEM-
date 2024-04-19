@@ -1,4 +1,4 @@
-# This customer PowerShell was created by Josh Madakor. All credits goes to him for the PowerShell script and project! Thanks to people like Josh, it truly helps the community grow with their technical skills!
+# This custom PowerShell was created by Josh Madakor. All credits goes to him for the PowerShell script and project! Thanks to people like Josh, it truly helps the community grow with their technical skills!
 # Get API key from here: https://ipgeolocation.io/
 $API_KEY      = "d4600b4efdef42b39828f5155041a457"
 $LOGFILE_NAME = "failed_rdp.log"
