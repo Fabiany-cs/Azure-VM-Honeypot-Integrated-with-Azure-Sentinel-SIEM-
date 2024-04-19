@@ -44,7 +44,7 @@
     </ul>
   </li>
 
-  <hr>
+<hr>
   
   <li><strong>Set up Log Analytics Workspaces</strong>
     <ul>
@@ -60,7 +60,7 @@
     </ul>
   </li>
 
-  <hr>
+<hr>
   
   <li><strong>Microsoft Defender for Cloud</strong>
   <ul>
