@@ -21,6 +21,7 @@
       <li>Resource Groups help organize your Azure resources. They allow you to manage all related resources as a single entity and facilitate cleanup once the project is complete.</li>
     </ul>
   </li>
+<img width="1437" alt="Screenshot 2024-04-18 at 9 54 32 PM" src="https://github.com/Fabiany-cs/Azure-VM-Honeypot-Integrated-with-Azure-Sentinel-SIEM-/assets/107880960/4b71071b-a9ee-4de6-9b06-a65863855d9d">
 
 <hr>
   
