@@ -254,7 +254,7 @@
 
 <li><strong>Monitor Attacks</strong>
   <ul>
-    <li>Leave the VM running to monitor and analyze brute force login attempts.</li>
+    <li>Leave the VM running to monitor and analyze brute force login attempts. The longer the better.</li>
     <li>Observe Azure Sentinel for alerts and visualizations of attempted logins on the map.</li>
   </ul>
 </li>
