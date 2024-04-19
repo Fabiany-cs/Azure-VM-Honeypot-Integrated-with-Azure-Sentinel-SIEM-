@@ -44,6 +44,13 @@
       <li>Wait for the VM deployment to complete.</li>
     </ul>
   </li>
+<img width="1437" alt="Screenshot 2024-04-18 at 9 55 29 PM" src="https://github.com/Fabiany-cs/Azure-VM-Honeypot-Integrated-with-Azure-Sentinel-SIEM-/assets/107880960/fd8d4863-6dd7-4c3e-ba75-3ec28736fa1f">
+<img width="1437" alt="Screenshot 2024-04-18 at 9 56 25 PM" src="https://github.com/Fabiany-cs/Azure-VM-Honeypot-Integrated-with-Azure-Sentinel-SIEM-/assets/107880960/f6c6ad18-7401-4f86-94b7-5bbf5559217b">
+<img width="526" alt="Screenshot 2024-04-18 at 9 56 35 PM" src="https://github.com/Fabiany-cs/Azure-VM-Honeypot-Integrated-with-Azure-Sentinel-SIEM-/assets/107880960/ada707f8-92cf-4bae-a34a-d598a8649266">
+<img width="1437" alt="Screenshot 2024-04-18 at 9 56 58 PM" src="https://github.com/Fabiany-cs/Azure-VM-Honeypot-Integrated-with-Azure-Sentinel-SIEM-/assets/107880960/57a7b2be-6574-4bc3-ab6f-8167f2525b52">
+<img width="1437" alt="Screenshot 2024-04-18 at 9 57 30 PM" src="https://github.com/Fabiany-cs/Azure-VM-Honeypot-Integrated-with-Azure-Sentinel-SIEM-/assets/107880960/58e29e44-65ac-43c2-9012-ce18b63ebf19">
+<img width="1437" alt="Screenshot 2024-04-18 at 9 57 38 PM" src="https://github.com/Fabiany-cs/Azure-VM-Honeypot-Integrated-with-Azure-Sentinel-SIEM-/assets/107880960/e5884055-f0da-41a6-9110-64407e02ab91">
+<img width="1437" alt="Screenshot 2024-04-18 at 9 57 58 PM" src="https://github.com/Fabiany-cs/Azure-VM-Honeypot-Integrated-with-Azure-Sentinel-SIEM-/assets/107880960/b5101169-9725-471b-a39a-c6e3b01acbfa">
 
 <hr>
   
@@ -60,6 +67,8 @@
       <li>Log Analytics Workspaces collect and analyze data from various sources, providing insights into system performance, security, and more.</li>
     </ul>
   </li>
+<img width="1437" alt="Screenshot 2024-04-18 at 9 58 53 PM" src="https://github.com/Fabiany-cs/Azure-VM-Honeypot-Integrated-with-Azure-Sentinel-SIEM-/assets/107880960/2b776984-abec-4ad1-bd63-1d03bbe1a7ff">
+
 
 <hr>
   
