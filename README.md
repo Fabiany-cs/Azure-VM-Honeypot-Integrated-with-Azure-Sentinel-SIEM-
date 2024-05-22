@@ -1,6 +1,7 @@
 # Azure VM Honeypot Integrated with Azure Sentinel (SIEM)
 <h2>Description</h2>
 <p>This project guides you through the creation of a honeypot environment in Azure, aimed at monitoring and analyzing brute force login attempts. By deploying a Windows 10 Pro Virtual Machine (VM) and integrating it with Azure Sentinel, Microsoft Defender for Cloud, and Log Analytics Workspaces, you'll be able to observe and analyze malicious login attempts in real-time. The project includes setting up logging, custom log creation, and visualization of geographic data using Azure Sentinel workbooks.</p>
+<img width="1437" alt="Screenshot 2024-04-18 at 11 15 45 PM" src="https://github.com/Fabiany-cs/Azure-VM-Honeypot-Integrated-with-Azure-Sentinel-SIEM-/assets/107880960/a1cf81a2-08cc-49fb-a252-5061eec2b36f">
 
 <hr>
 
