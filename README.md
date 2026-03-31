@@ -60,7 +60,7 @@ Internet attackers
 
 ## Full Lab Guide
 
-Step-by-step instructions for recreating this lab are available at: [your website link here]
+Step-by-step instructions for recreating this lab are available at: https://www.fabianymorales.com/projects/cloud/guides/azure-vm-honeypot-sentinel
 
 ---
 
