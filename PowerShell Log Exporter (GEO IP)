@@ -1,139 +1,208 @@
-# This custom PowerShell was created by Josh Madakor. All credits goes to him for the PowerShell script and project! Thanks to people like Josh, it truly helps the community grow with their technical skills!
-# Get API key from here: https://ipgeolocation.io/
-$API_KEY      = "d4600b4efdef42b39828f5155041a457"
-$LOGFILE_NAME = "failed_rdp.log"
-$LOGFILE_PATH = "C:\ProgramData\$($LOGFILE_NAME)"
+# =============================================================================
+# Get-FailedRDP-GeoData.ps1
+# Azure Honeypot Lab - Failed RDP Geolocation Logger
+#
+# Prerequisites:
+#   - Free API key from https://ipgeolocation.io/
+#   - Run as Administrator (required to read Security event log)
+#   - Windows 10/11 or Windows Server 2016+
+#
+# Usage:
+#   Set $API_KEY below, then run:
+#   .\Get-FailedRDP-GeoData.ps1
+# =============================================================================
 
-# This filter will be used to filter failed RDP events from Windows Event Viewer
-$XMLFilter = @'
-<QueryList> 
-   <Query Id="0" Path="Security">
-         <Select Path="Security">
-              *[System[(EventID='4625')]]
-          </Select>
-    </Query>
-</QueryList> 
+#Requires -RunAsAdministrator
+
+[CmdletBinding()]
+param (
+    [string]$ApiKey      = "###################",   # <-- Replace with your ipgeolocation.io key
+    [string]$LogFilePath = "C:\ProgramData\failed_rdp.log",
+    [int]   $PollSeconds = 5                        # How often to poll Event Viewer
+)
+
+# ---------------------------------------------------------------------------
+# Sample log entries — used to pre-seed the log so Log Analytics / Sentinel
+# can learn the custom log schema. Filter these out in KQL with:
+#   | where destinationhost_CF != "samplehost"
+# ---------------------------------------------------------------------------
+function Write-SampleLogs {
+    [CmdletBinding()]
+    param([string]$Path)
+
+    $samples = @(
+        "latitude:47.91542,longitude:-120.60306,destinationhost:samplehost,username:fakeuser,sourcehost:24.16.97.222,state:Washington,country:United States,label:United States - 24.16.97.222,timestamp:2021-10-26 03:28:29"
+        "latitude:-22.90906,longitude:-47.06455,destinationhost:samplehost,username:lnwbaq,sourcehost:20.195.228.49,state:Sao Paulo,country:Brazil,label:Brazil - 20.195.228.49,timestamp:2021-10-26 05:46:20"
+        "latitude:52.37022,longitude:4.89517,destinationhost:samplehost,username:CSNYDER,sourcehost:89.248.165.74,state:North Holland,country:Netherlands,label:Netherlands - 89.248.165.74,timestamp:2021-10-26 06:12:56"
+        "latitude:40.71455,longitude:-74.00714,destinationhost:samplehost,username:ADMINISTRATOR,sourcehost:72.45.247.218,state:New York,country:United States,label:United States - 72.45.247.218,timestamp:2021-10-26 10:44:07"
+        "latitude:33.99762,longitude:-6.84737,destinationhost:samplehost,username:AZUREUSER,sourcehost:102.50.242.216,state:Rabat-Sale-Kenitra,country:Morocco,label:Morocco - 102.50.242.216,timestamp:2021-10-26 11:03:13"
+        "latitude:-5.32558,longitude:100.28595,destinationhost:samplehost,username:Test,sourcehost:42.1.62.34,state:Penang,country:Malaysia,label:Malaysia - 42.1.62.34,timestamp:2021-10-26 11:04:45"
+        "latitude:41.05722,longitude:28.84926,destinationhost:samplehost,username:AZUREUSER,sourcehost:176.235.196.111,state:Istanbul,country:Turkey,label:Turkey - 176.235.196.111,timestamp:2021-10-26 11:50:47"
+        "latitude:55.87925,longitude:37.54691,destinationhost:samplehost,username:Test,sourcehost:87.251.67.98,state:null,country:Russia,label:Russia - 87.251.67.98,timestamp:2021-10-26 12:13:45"
+        "latitude:52.37018,longitude:4.87324,destinationhost:samplehost,username:AZUREUSER,sourcehost:20.86.161.127,state:North Holland,country:Netherlands,label:Netherlands - 20.86.161.127,timestamp:2021-10-26 12:33:46"
+        "latitude:17.49163,longitude:-88.18704,destinationhost:samplehost,username:Test,sourcehost:45.227.254.8,state:null,country:Belize,label:Belize - 45.227.254.8,timestamp:2021-10-26 13:13:25"
+        "latitude:-55.88802,longitude:37.65136,destinationhost:samplehost,username:Test,sourcehost:94.232.47.130,state:Central Federal District,country:Russia,label:Russia - 94.232.47.130,timestamp:2021-10-26 14:25:33"
+    )
+
+    $samples | Out-File -FilePath $Path -Encoding utf8 -Append
+    Write-Host "[INIT] Sample log entries written to: $Path" -ForegroundColor Cyan
+}
+
+# ---------------------------------------------------------------------------
+# Format a datetime into the log timestamp format: yyyy-MM-dd HH:mm:ss
+# ---------------------------------------------------------------------------
+function Format-Timestamp {
+    param([datetime]$Dt)
+    return $Dt.ToString("yyyy-MM-dd HH:mm:ss")
+}
+
+# ---------------------------------------------------------------------------
+# Call the ipgeolocation.io API and return a hashtable of geo fields.
+# Returns $null if the call fails.
+# ---------------------------------------------------------------------------
+function Get-GeoData {
+    param(
+        [string]$IpAddress,
+        [string]$Key
+    )
+
+    $uri = "https://api.ipgeolocation.io/ipgeo?apiKey=$Key&ip=$IpAddress"
+
+    try {
+        $response = Invoke-RestMethod -Uri $uri -UseBasicParsing -TimeoutSec 10
+        return @{
+            Latitude  = if ($response.latitude)     { $response.latitude }     else { "null" }
+            Longitude = if ($response.longitude)    { $response.longitude }    else { "null" }
+            State     = if ($response.state_prov -ne "") { $response.state_prov } else { "null" }
+            Country   = if ($response.country_name -ne "") { $response.country_name } else { "null" }
+        }
+    }
+    catch {
+        Write-Warning "Geo lookup failed for $IpAddress : $_"
+        return $null
+    }
+}
+
+# ---------------------------------------------------------------------------
+# Build a log line from field values
+# ---------------------------------------------------------------------------
+function Build-LogLine {
+    param(
+        [string]$Latitude,
+        [string]$Longitude,
+        [string]$DestHost,
+        [string]$Username,
+        [string]$SourceIp,
+        [string]$State,
+        [string]$Country,
+        [string]$Timestamp
+    )
+
+    $label = "$Country - $SourceIp"
+    return "latitude:$Latitude,longitude:$Longitude,destinationhost:$DestHost,username:$Username,sourcehost:$SourceIp,state:$State,country:$Country,label:$label,timestamp:$Timestamp"
+}
+
+# ---------------------------------------------------------------------------
+# XPath filter for Event ID 4625 (failed logon)
+# ---------------------------------------------------------------------------
+$XmlFilter = @'
+<QueryList>
+  <Query Id="0" Path="Security">
+    <Select Path="Security">*[System[(EventID='4625')]]</Select>
+  </Query>
+</QueryList>
 '@
 
-<#
-    This function creates a bunch of sample log files that will be used to train the
-    Extract feature in Log Analytics workspace. If you don't have enough log files to
-    "train" it, it will fail to extract certain fields for some reason -_-.
-    We can avoid including these fake records on our map by filtering out all logs with
-    a destination host of "samplehost"
-#>
-Function write-Sample-Log() {
-    "latitude:47.91542,longitude:-120.60306,destinationhost:samplehost,username:fakeuser,sourcehost:24.16.97.222,state:Washington,country:United States,label:United States - 24.16.97.222,timestamp:2021-10-26 03:28:29" | Out-File $LOGFILE_PATH -Append -Encoding utf8
-    "latitude:-22.90906,longitude:-47.06455,destinationhost:samplehost,username:lnwbaq,sourcehost:20.195.228.49,state:Sao Paulo,country:Brazil,label:Brazil - 20.195.228.49,timestamp:2021-10-26 05:46:20" | Out-File $LOGFILE_PATH -Append -Encoding utf8
-    "latitude:52.37022,longitude:4.89517,destinationhost:samplehost,username:CSNYDER,sourcehost:89.248.165.74,state:North Holland,country:Netherlands,label:Netherlands - 89.248.165.74,timestamp:2021-10-26 06:12:56" | Out-File $LOGFILE_PATH -Append -Encoding utf8
-    "latitude:40.71455,longitude:-74.00714,destinationhost:samplehost,username:ADMINISTRATOR,sourcehost:72.45.247.218,state:New York,country:United States,label:United States - 72.45.247.218,timestamp:2021-10-26 10:44:07" | Out-File $LOGFILE_PATH -Append -Encoding utf8
-    "latitude:33.99762,longitude:-6.84737,destinationhost:samplehost,username:AZUREUSER,sourcehost:102.50.242.216,state:Rabat-Salé-Kénitra,country:Morocco,label:Morocco - 102.50.242.216,timestamp:2021-10-26 11:03:13" | Out-File $LOGFILE_PATH -Append -Encoding utf8
-    "latitude:-5.32558,longitude:100.28595,destinationhost:samplehost,username:Test,sourcehost:42.1.62.34,state:Penang,country:Malaysia,label:Malaysia - 42.1.62.34,timestamp:2021-10-26 11:04:45" | Out-File $LOGFILE_PATH -Append -Encoding utf8
-    "latitude:41.05722,longitude:28.84926,destinationhost:samplehost,username:AZUREUSER,sourcehost:176.235.196.111,state:Istanbul,country:Turkey,label:Turkey - 176.235.196.111,timestamp:2021-10-26 11:50:47" | Out-File $LOGFILE_PATH -Append -Encoding utf8
-    "latitude:55.87925,longitude:37.54691,destinationhost:samplehost,username:Test,sourcehost:87.251.67.98,state:null,country:Russia,label:Russia - 87.251.67.98,timestamp:2021-10-26 12:13:45" | Out-File $LOGFILE_PATH -Append -Encoding utf8
-    "latitude:52.37018,longitude:4.87324,destinationhost:samplehost,username:AZUREUSER,sourcehost:20.86.161.127,state:North Holland,country:Netherlands,label:Netherlands - 20.86.161.127,timestamp:2021-10-26 12:33:46" | Out-File $LOGFILE_PATH -Append -Encoding utf8
-    "latitude:17.49163,longitude:-88.18704,destinationhost:samplehost,username:Test,sourcehost:45.227.254.8,state:null,country:Belize,label:Belize - 45.227.254.8,timestamp:2021-10-26 13:13:25" | Out-File $LOGFILE_PATH -Append -Encoding utf8
-    "latitude:-55.88802,longitude:37.65136,destinationhost:samplehost,username:Test,sourcehost:94.232.47.130,state:Central Federal District,country:Russia,label:Russia - 94.232.47.130,timestamp:2021-10-26 14:25:33" | Out-File $LOGFILE_PATH -Append -Encoding utf8
+# ---------------------------------------------------------------------------
+# Main — initialise log file, then poll in a loop
+# ---------------------------------------------------------------------------
+
+# Validate API key is set
+if ($ApiKey -eq "YOUR_API_KEY_HERE") {
+    Write-Error "Please set your ipgeolocation.io API key in the `$ApiKey parameter."
+    exit 1
 }
 
-# This block of code will create the log file if it doesn't already exist
-if ((Test-Path $LOGFILE_PATH) -eq $false) {
-    New-Item -ItemType File -Path $LOGFILE_PATH
-    write-Sample-Log
+# Create log file and seed with samples if it does not exist
+if (-not (Test-Path -Path $LogFilePath)) {
+    New-Item -ItemType File -Path $LogFilePath -Force | Out-Null
+    Write-SampleLogs -Path $LogFilePath
 }
 
-# Infinite Loop that keeps checking the Event Viewer logs.
-while ($true)
-{
-    
-    Start-Sleep -Seconds 1
-    # This retrieves events from Windows EVent Viewer based on the filter
-    $events = Get-WinEvent -FilterXml $XMLFilter -ErrorAction SilentlyContinue
-    if ($Error) {
-        #Write-Host "No Failed Logons found. Re-run script when a login has failed."
+# Load existing log content into a HashSet for O(1) duplicate detection
+# We key on the timestamp+sourceIp combination to avoid redundant API calls.
+$seenEntries = [System.Collections.Generic.HashSet[string]]::new()
+
+Get-Content -Path $LogFilePath | ForEach-Object {
+    # Extract "timestamp:YYYY-MM-DD HH:mm:ss" and "sourcehost:x.x.x.x"
+    if ($_ -match 'timestamp:([^,]+).*sourcehost:([^,]+)') {
+        [void]$seenEntries.Add("$($Matches[1])|$($Matches[2])")
     }
+}
 
-    # Step through each event collected, get geolocation
-    #    for the IP Address, and add new events to the custom log
+Write-Host "[START] Monitoring for failed RDP logons. Press Ctrl+C to stop." -ForegroundColor Green
+Write-Host "[INFO]  Log file: $LogFilePath" -ForegroundColor Gray
+
+while ($true) {
+    Start-Sleep -Seconds $PollSeconds
+
+    # Retrieve all 4625 events; suppress error if log is empty
+    $events = Get-WinEvent -FilterXml $XmlFilter -ErrorAction SilentlyContinue
+    if (-not $events) { continue }
+
     foreach ($event in $events) {
 
+        # Property index 19 = source IP address
+        $sourceIp = $event.Properties[19].Value
 
-        # $event.properties[19] is the source IP address of the failed logon
-        # This if-statement will proceed if the IP address exists (>= 5 is arbitrary, just saying if it's not empty)
-        if ($event.properties[19].Value.Length -ge 5) {
-
-            # Pick out fields from the event. These will be inserted into our new custom log
-            $timestamp = $event.TimeCreated
-            $year = $event.TimeCreated.Year
-
-            $month = $event.TimeCreated.Month
-            if ("$($event.TimeCreated.Month)".Length -eq 1) {
-                $month = "0$($event.TimeCreated.Month)"
-            }
-
-            $day = $event.TimeCreated.Day
-            if ("$($event.TimeCreated.Day)".Length -eq 1) {
-                $day = "0$($event.TimeCreated.Day)"
-            }
-            
-            $hour = $event.TimeCreated.Hour
-            if ("$($event.TimeCreated.Hour)".Length -eq 1) {
-                $hour = "0$($event.TimeCreated.Hour)"
-            }
-
-            $minute = $event.TimeCreated.Minute
-            if ("$($event.TimeCreated.Minute)".Length -eq 1) {
-                $minute = "0$($event.TimeCreated.Minute)"
-            }
-
-
-            $second = $event.TimeCreated.Second
-            if ("$($event.TimeCreated.Second)".Length -eq 1) {
-                $second = "0$($event.TimeCreated.Second)"
-            }
-
-            $timestamp = "$($year)-$($month)-$($day) $($hour):$($minute):$($second)"
-            $eventId = $event.Id
-            $destinationHost = $event.MachineName# Workstation Name (Destination)
-            $username = $event.properties[5].Value # Account Name (Attempted Logon)
-            $sourceHost = $event.properties[11].Value # Workstation Name (Source)
-            $sourceIp = $event.properties[19].Value # IP Address
-        
-
-            # Get the current contents of the Log file!
-            $log_contents = Get-Content -Path $LOGFILE_PATH
-
-            # Do not write to the log file if the log already exists.
-            if (-Not ($log_contents -match "$($timestamp)") -or ($log_contents.Length -eq 0)) {
-            
-                # Announce the gathering of geolocation data and pause for a second as to not rate-limit the API
-                #Write-Host "Getting Latitude and Longitude from IP Address and writing to log" -ForegroundColor Yellow -BackgroundColor Black
-                Start-Sleep -Seconds 1
-
-                # Make web request to the geolocation API
-                # For more info: https://ipgeolocation.io/documentation/ip-geolocation-api.html
-                $API_ENDPOINT = "https://api.ipgeolocation.io/ipgeo?apiKey=$($API_KEY)&ip=$($sourceIp)"
-                $response = Invoke-WebRequest -UseBasicParsing -Uri $API_ENDPOINT
-
-                # Pull Data from the API response, and store them in variables
-                $responseData = $response.Content | ConvertFrom-Json
-                $latitude = $responseData.latitude
-                $longitude = $responseData.longitude
-                $state_prov = $responseData.state_prov
-                if ($state_prov -eq "") { $state_prov = "null" }
-                $country = $responseData.country_name
-                if ($country -eq "") {$country -eq "null"}
-
-                # Write all gathered data to the custom log file. It will look something like this:
-                #
-                "latitude:$($latitude),longitude:$($longitude),destinationhost:$($destinationHost),username:$($username),sourcehost:$($sourceIp),state:$($state_prov), country:$($country),label:$($country) - $($sourceIp),timestamp:$($timestamp)" | Out-File $LOGFILE_PATH -Append -Encoding utf8
-
-                Write-Host -BackgroundColor Black -ForegroundColor Magenta "latitude:$($latitude),longitude:$($longitude),destinationhost:$($destinationHost),username:$($username),sourcehost:$($sourceIp),state:$($state_prov),label:$($country) - $($sourceIp),timestamp:$($timestamp)"
-            }
-            else {
-                # Entry already exists in custom log file. Do nothing, optionally, remove the # from the line below for output
-                # Write-Host "Event already exists in the custom log. Skipping." -ForegroundColor Gray -BackgroundColor Black
-            }
+        # Skip if the IP is missing, a loopback, or an APIPA address
+        if ([string]::IsNullOrWhiteSpace($sourceIp) -or
+            $sourceIp.Length -lt 7         -or
+            $sourceIp -eq '-'              -or
+            $sourceIp -eq '127.0.0.1'     -or
+            $sourceIp -eq '::1'           -or
+            $sourceIp -like '169.254.*') {
+            continue
         }
+
+        $timestamp = Format-Timestamp -Dt $event.TimeCreated
+        $entryKey  = "$timestamp|$sourceIp"
+
+        # Skip duplicates (already logged this exact event)
+        if ($seenEntries.Contains($entryKey)) { continue }
+
+        # Properties reference for Event ID 4625:
+        #   [5]  = Target Account Name (the attempted username)
+        #   [11] = Workstation Name (source)
+        $username    = $event.Properties[5].Value
+        $sourceHost  = $event.Properties[11].Value
+        $destHost    = $event.MachineName
+
+        # Geo lookup — throttle to stay within free-tier rate limits
+        Start-Sleep -Milliseconds 500
+        $geo = Get-GeoData -IpAddress $sourceIp -Key $ApiKey
+
+        if ($null -eq $geo) {
+            # Log entry without geo data so we don't lose the event
+            $geo = @{ Latitude = "null"; Longitude = "null"; State = "null"; Country = "null" }
+        }
+
+        $logLine = Build-LogLine `
+            -Latitude  $geo.Latitude  `
+            -Longitude $geo.Longitude `
+            -DestHost  $destHost      `
+            -Username  $username      `
+            -SourceIp  $sourceIp      `
+            -State     $geo.State     `
+            -Country   $geo.Country   `
+            -Timestamp $timestamp
+
+        # Append to log file
+        $logLine | Out-File -FilePath $LogFilePath -Append -Encoding utf8
+
+        # Mark as seen so we skip it on the next poll
+        [void]$seenEntries.Add($entryKey)
+
+        Write-Host "[EVENT] $logLine" -ForegroundColor Magenta
     }
 }
